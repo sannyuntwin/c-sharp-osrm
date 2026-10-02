@@ -1,0 +1,6 @@
+@OsrmApi_HostAddress = http://localhost:8080
+
+GET {{OsrmApi_HostAddress}}/route?fromLon=13.388860&fromLat=52.517037&toLon=13.397634&toLat=52.529407
+Accept: application/json
+
+###

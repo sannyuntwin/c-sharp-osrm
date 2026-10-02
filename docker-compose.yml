@@ -1,0 +1,34 @@
+services:
+  # 1. The OSRM Routing Engine Service
+  osrm-backend:
+    image: osrm/osrm-backend
+    container_name: osrm_routing_server
+    volumes:
+      # Mounts your local folder containing the processed .osrm files into the container
+      - ./osrm-data:/data
+    ports:
+      - "5000:5000"
+    # Command to start the server using the pre-processed map data
+    command: osrm-routed --algorithm mld /data/berlin-latest.osrm
+    restart: unless-stopped
+
+  # 2. Your .NET 8 Web API Service
+  dotnet-api:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    container_name: dotnet_web_api
+    volumes:
+      # Mounts your C# project folder so changes sync dynamically (Great for development)
+      - .:/app
+    working_dir: /app
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      # Passes the OSRM URL as an environment variable to your C# code
+      - OSRM_URL=http://osrm-backend:5000
+    # Restores and runs the app on startup
+    command: dotnet watch run --no-launch-profile
+    depends_on:
+      - osrm-backend
+    restart: unless-stopped

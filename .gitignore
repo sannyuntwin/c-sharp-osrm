@@ -1,0 +1,13 @@
+# Map data (downloaded and generated; see README for setup)
+osrm-data/
+
+# .NET build output
+bin/
+obj/
+
+# IDE / OS
+.vs/
+.vscode/
+*.user
+.DS_Store
+Thumbs.db
